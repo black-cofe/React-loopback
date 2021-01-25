@@ -21,7 +21,7 @@ export const postComment = (dishId, rating, comment) => (dispatch) => {
         comment: comment
     }
 
-    return fetch(baseUrl + 'api/comments', {
+    return fetch(baseUrl + 'api/Comments', {
         method: 'POST',
         body: JSON.stringify(newComment),
         headers: {
@@ -88,7 +88,7 @@ export const addDishes = (dishes) => ({
 });
 
 export const fetchComments = () => (dispatch) => {
-    return fetch(baseUrl + 'api/comments?filter={"include": ["customer"]}')
+    return fetch(baseUrl + 'api/Comments?filter={"include": ["customer"]}')
         .then(response => {
             if (response.ok) {
                 return response;
@@ -247,7 +247,7 @@ export const loginUser = (creds) => (dispatch) => {
             localStorage.setItem('token', JSON.stringify(response));
             localStorage.setItem('creds', JSON.stringify(creds));
             // Dispatch the success action
-            dispatch(fetchFavorites());
+            dispatch(fetchFavourites());
             dispatch(receiveLogin(response));
         }
         else {
@@ -285,7 +285,7 @@ export const logoutUser = () => (dispatch) => {
             localStorage.removeItem('token');
             localStorage.removeItem('creds');
             // Dispatch the success action
-            dispatch(favoritesFailed("Error 401: Unauthorized"));
+            dispatch(favouritesFailed("Error 401: Unauthorized"));
             dispatch(receiveLogout());
         } else {
             var error = new Error('Error ' + response.status + ': ' + response.statusText);
@@ -300,15 +300,15 @@ export const logoutUser = () => (dispatch) => {
 
 }
 
-export const postFavorite = (dishId) => (dispatch) => {
+export const postFavourite = (dishId) => (dispatch) => {
 
     let token = JSON.parse(localStorage.getItem('token'));
-
+    console.log(token);
     if (!token) {
         return;
     }
 
-    return fetch(baseUrl + 'api/favorites/', {
+    return fetch(baseUrl + 'api/favourites/', {
         method: "POST",
         body: JSON.stringify({dishesId: dishId, customerId: token.userId}),
         headers: {
@@ -330,11 +330,11 @@ export const postFavorite = (dishId) => (dispatch) => {
             throw error;
       })
     .then(response => response.json())
-    .then(favorite => { console.log('Favorite Added', favorite); dispatch(fetchFavorites()); })
-    .catch(error => dispatch(favoritesFailed(error.message)));
+    .then(favourite => { console.log('Favourite Added', favourite); dispatch(fetchFavourites()); })
+    .catch(error => dispatch(favouritesFailed(error.message)));
 }
 
-export const deleteFavorite = (id) => (dispatch) => {
+export const deleteFavourite = (id) => (dispatch) => {
 
     let token = JSON.parse(localStorage.getItem('token'));
 
@@ -342,7 +342,7 @@ export const deleteFavorite = (id) => (dispatch) => {
         return;
     }
 
-    return fetch(baseUrl + 'api/favorites/' + id, {
+    return fetch(baseUrl + 'api/favourites/' + id, {
         method: "DELETE",
         headers: {
             'Authorization': token.id
@@ -362,20 +362,20 @@ export const deleteFavorite = (id) => (dispatch) => {
             throw error;
       })
     .then(response => response.json())
-    .then(favorite => { console.log('Favorite Deleted', favorite); dispatch(fetchFavorites()); })
-    .catch(error => dispatch(favoritesFailed(error.message)));
+    .then(favourite => { console.log('Favourite Deleted', favourite); dispatch(fetchFavourites()); })
+    .catch(error => dispatch(favouritesFailed(error.message)));
 };
 
-export const fetchFavorites = () => (dispatch) => {
-    dispatch(favoritesLoading(true));
+export const fetchFavourites = () => (dispatch) => {
+    dispatch(favouritesLoading(true));
 
     const token = JSON.parse(localStorage.getItem('token'));
 
     if (!token) {
-        return dispatch(favoritesFailed('No User Logged in!'));
+        return dispatch(favouritesFailed('No User Logged in!'));
     }
 
-    return fetch(baseUrl + 'api/Customers/' + token.userId + '/favorites?filter={"include": ["dishes"]}', {
+    return fetch(baseUrl + 'api/Customers/' + token.userId + '/favourites?filter={"include": ["dishes"]}', {
         headers: {
             'Authorization': token.id
         },
@@ -396,20 +396,20 @@ export const fetchFavorites = () => (dispatch) => {
         throw errmess;
     })
     .then(response => response.json())
-    .then(favorites => dispatch(addFavorites(favorites)))
-    .catch(error => dispatch(favoritesFailed(error.message)));
+    .then(favourites => dispatch(addFavourites(favourites)))
+    .catch(error => dispatch(favouritesFailed(error.message)));
 }
 
-export const favoritesLoading = () => ({
-    type: ActionTypes.FAVORITES_LOADING
+export const favouritesLoading = () => ({
+    type: ActionTypes.FAVOURITES_LOADING
 });
 
-export const favoritesFailed = (errmess) => ({
-    type: ActionTypes.FAVORITES_FAILED,
+export const favouritesFailed = (errmess) => ({
+    type: ActionTypes.FAVOURITES_FAILED,
     payload: errmess
 });
 
-export const addFavorites = (favorites) => ({
-    type: ActionTypes.ADD_FAVORITES,
-    payload: favorites
+export const addFavourites = (favourites) => ({
+    type: ActionTypes.ADD_FAVOURITES,
+    payload: favourites
 });

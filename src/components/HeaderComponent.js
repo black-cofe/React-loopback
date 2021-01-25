@@ -69,8 +69,8 @@ class Header extends Component {
                                     </NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink className="nav-link" to="/favorites">
-                                        <span className="fa fa-heart fa-lg"></span> My Favorites
+                                    <NavLink className="nav-link" to="/favourites">
+                                        <span className="fa fa-heart fa-lg"></span> My Favourites
                                     </NavLink>
                                 </NavItem>
                                 <NavItem>
